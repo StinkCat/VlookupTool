@@ -1,6 +1,4 @@
 # VlookupTool
 
-        VlookupTool/img/jieguo.png
-      
-        VlookupTool/img/jianmian.png
+    ![Image text](https://raw.github.com/StinkCat/repositpry/master/VlookupTool/img/jieguo.png)
       
