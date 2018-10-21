@@ -1,25 +1,31 @@
-''''主窗体代码
 
 Private Sub ComboBox1_Change() '工作簿改动时添加工作表名称
-    Set SourceBook = Excel.Workbooks(ComboBox1.Value)
-    Me.Controls("ComboBox2").Clear
-    For Index = 1 To SourceBook.Sheets.Count
-        Me.Controls("ComboBox2").AddItem SourceBook.Sheets(Index).Name
-    Next
+    If ComboBox1.Value <> "" Then
+        Set SourceBook = Excel.Workbooks(ComboBox1.Value)
+        Me.Controls("ComboBox2").Clear
+        For Index = 1 To SourceBook.Sheets.Count
+            Me.Controls("ComboBox2").AddItem SourceBook.Sheets(Index).Name
+        Next
+        ComboBox2.ListIndex = 0
+    End If
 End Sub
 
 
 Private Sub ComboBox3_Change() '工作簿改动时添加工作表名称
-    Set SourceBook = Excel.Workbooks(ComboBox3.Value)
-    Me.Controls("ComboBox4").Clear
-    For Index = 1 To SourceBook.Sheets.Count
-        Me.Controls("ComboBox4").AddItem SourceBook.Sheets(Index).Name
-    Next
+    If ComboBox3.Value <> "" Then
+        Set SourceBook = Excel.Workbooks(ComboBox3.Value)
+        Me.Controls("ComboBox4").Clear
+        For Index = 1 To SourceBook.Sheets.Count
+            Me.Controls("ComboBox4").AddItem SourceBook.Sheets(Index).Name
+        Next
+        ComboBox4.ListIndex = 0
+    End If
 End Sub
 
 Private Sub CommandButton2_Click()
     UserForm3.Show
 End Sub
+
 
 Private Sub TextBox1_Change()
     If IsNumeric(TextBox1.Value) Then
@@ -63,10 +69,12 @@ Private Sub UserForm_Initialize() '窗体默认启动时添加工作簿名称
     For Index = 1 To Excel.Workbooks.Count
         Me.Controls("ComboBox1").AddItem Excel.Workbooks(Index).Name
         Me.Controls("ComboBox3").AddItem Excel.Workbooks(Index).Name
-        TextBox5.Value = 2
-        TextBox6.Value = "#N/A"
-        TextBox7.Value = "&"
     Next
+    ComboBox1.ListIndex = 0
+    ComboBox3.ListIndex = 0
+    TextBox5.Value = 2
+    TextBox6.Value = "#N/A"
+    TextBox7.Value = "&"
 End Sub
 '主函数（按键）入口
 Private Sub CommandButton1_Click()
@@ -130,3 +138,4 @@ Private Sub CommandButton1_Click()
     MsgBox "共处理 " & This_rows - WriteNum + 1 & " 条记录，耗时" & Format(Timer - t0, "0.00") & "秒。"
     Set MapDict = Nothing
 End Sub
+
