@@ -11,7 +11,7 @@ excel中自带函数vlookup是很方便使用的，但随着单元格行数逐�
 
 窗体设计比较简洁，看图↓
 
-[Image text](https://github.com/StinkCat/VlookupTool/raw/master/img/jiemian.png)
+、、、、[Image text](https://github.com/StinkCat/VlookupTool/raw/master/img/jiemian.png)
 
 1、其中红色框是必填值，绿色框是选填值；
 
@@ -25,7 +25,7 @@ excel中自带函数vlookup是很方便使用的，但随着单元格行数逐�
 
 6、勾选绿色框运行时会多了一点运算，所以时间耗费多那么一点点
 
-[Image text](https://github.com/StinkCat/VlookupTool/raw/master/img/jieguo.png)
+‘’‘’[Image text](https://github.com/StinkCat/VlookupTool/raw/master/img/jieguo.png)
 
  测试两边为33万行数据进行索引匹配，只耗费18秒，尝试上面所说勾选绿色框两功能耗费27秒左右，差距不是很大。
  
