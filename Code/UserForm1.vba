@@ -1,3 +1,42 @@
+'窗体1代码
+Function StrtoW(ByVal SrtText As String) As String '字符转列号再转列字母
+    Dim ColNum As Long, Index As Long
+    Index = Application.WorksheetFunction.Search(".", SrtText)
+    ColNum = Left(SrtText, Index)
+    StrtoW = Replace(Cells(1, ColNum).Address(False, False), "1", "")
+End Function
+Private Sub Col1_Change()
+    If Col1 <> "" Then
+        Set SourceSheet = Excel.Workbooks(ComboBox1.Value).Sheets(ComboBox2.Value)
+        ColStr = StrtoW(Col1.Value)
+        RowsNum = Application.CountA(SourceSheet.Range(ColStr & ":" & ColStr))
+        Tip1.Value = ColStr & "列 " & Format(RowsNum / 10000, "0.00") & " 万"
+    End If
+End Sub
+Private Sub Col2_Change()
+    If Col2 <> "" Then
+        Set SourceSheet = Excel.Workbooks(ComboBox1.Value).Sheets(ComboBox2.Value)
+        ColStr = StrtoW(Col2.Value)
+        RowsNum = Application.CountA(SourceSheet.Range(ColStr & ":" & ColStr))
+        Tip2.Value = ColStr & "列 " & Format(RowsNum / 10000, "0.00") & " 万"
+    End If
+End Sub
+Private Sub Col3_Change()
+    If Col3 <> "" Then
+        Set TargetSheet = Excel.Workbooks(ComboBox3.Value).Sheets(ComboBox4.Value)
+        ColStr = StrtoW(Col3.Value)
+        RowsNum = Application.CountA(TargetSheet.Range(ColStr & ":" & ColStr))
+        Tip3.Value = ColStr & "列 " & Format(RowsNum / 10000, "0.00") & " 万"
+    End If
+End Sub
+Private Sub Col4_Change()
+    If Col4 <> "" Then
+        Set TargetSheet = Excel.Workbooks(ComboBox3.Value).Sheets(ComboBox4.Value)
+        ColStr = StrtoW(Col4.Value)
+        RowsNum = Application.CountA(TargetSheet.Range(ColStr & ":" & ColStr))
+        Tip4.Value = ColStr & "列 " & Format(RowsNum / 10000, "0.00") & " 万"
+    End If
+End Sub
 
 Private Sub ComboBox1_Change() '工作簿改动时添加工作表名称
     If ComboBox1.Value <> "" Then
@@ -10,6 +49,41 @@ Private Sub ComboBox1_Change() '工作簿改动时添加工作表名称
     End If
 End Sub
 
+Private Sub ComboBox2_Change()
+    If ComboBox2.Value <> "" Then
+        Me.Controls("Col1").Clear
+        Me.Controls("Col2").Clear
+        Set SourceSheet = Excel.Workbooks(ComboBox1.Value).Sheets(ComboBox2.Value)
+        ColNum = SourceSheet.UsedRange.Columns.Count
+        For n = 1 To ColNum
+            If SourceSheet.Cells(1, n) <> "" Then
+                Me.Controls("Col1").AddItem n & "." & SourceSheet.Cells(1, n)
+                Me.Controls("Col2").AddItem n & "." & SourceSheet.Cells(1, n)
+            Else
+                Me.Controls("Col1").AddItem n & ".NULL"
+                Me.Controls("Col2").AddItem n & ".NULL"
+            End If
+        Next n
+    End If
+End Sub
+Private Sub ComboBox4_Change()
+    If ComboBox4.Value <> "" Then
+        Me.Controls("Col3").Clear
+        Me.Controls("Col4").Clear
+        Set TargetSheet = Excel.Workbooks(ComboBox3.Value).Sheets(ComboBox4.Value)
+        ColNum = TargetSheet.UsedRange.Columns.Count
+        For n = 1 To ColNum
+            If TargetSheet.Cells(1, n) <> "" Then
+            
+                Me.Controls("Col3").AddItem n & "." & TargetSheet.Cells(1, n)
+                Me.Controls("Col4").AddItem n & "." & TargetSheet.Cells(1, n)
+            Else
+                Me.Controls("Col3").AddItem n & ".NULL"
+                Me.Controls("Col4").AddItem n & ".NULL"
+            End If
+        Next n
+    End If
+End Sub
 
 Private Sub ComboBox3_Change() '工作簿改动时添加工作表名称
     If ComboBox3.Value <> "" Then
@@ -26,75 +100,41 @@ Private Sub CommandButton2_Click()
     UserForm3.Show
 End Sub
 
-
-Private Sub TextBox1_Change()
-    If IsNumeric(TextBox1.Value) Then
-        MsgBox "输入值为数字，请输入所在列的字母，例如A列请输入“A”"
-    Else
-        If ComboBox1.Value <> "" And ComboBox2.Value <> "" And TextBox1.Value <> "" Then
-            Tip1.Value = Excel.Workbooks(ComboBox1.Value).Sheets(ComboBox2.Value).Range(TextBox1.Value & 1)
-        End If
-    End If
-End Sub
-Private Sub TextBox2_Change()
-    If IsNumeric(TextBox2.Value) Then
-        MsgBox "输入值为数字，请输入所在列的字母，例如A列请输入“A”"
-    Else
-        If ComboBox1.Value <> "" And ComboBox2.Value <> "" And TextBox2.Value <> "" Then
-            Tip2.Value = Excel.Workbooks(ComboBox1.Value).Sheets(ComboBox2.Value).Range(TextBox2.Value & 1)
-        End If
-    End If
-End Sub
-Private Sub TextBox3_Change()
-    If IsNumeric(TextBox3.Value) Then
-        MsgBox "输入值为数字，请输入所在列的字母，例如A列请输入“A”"
-    Else
-        If ComboBox3.Value <> "" And ComboBox4.Value <> "" And TextBox3.Value <> "" Then
-            Tip3.Value = Excel.Workbooks(ComboBox3.Value).Sheets(ComboBox4.Value).Range(TextBox3.Value & 1)
-        End If
-    End If
-End Sub
-Private Sub TextBox4_Change()
-    If IsNumeric(TextBox4.Value) Then
-        MsgBox "输入值为数字，请输入所在列的字母，例如A列请输入“A”"
-    Else
-        If ComboBox3.Value <> "" And ComboBox4.Value <> "" And TextBox4.Value <> "" Then
-            Tip4.Value = Excel.Workbooks(ComboBox3.Value).Sheets(ComboBox4.Value).Range(TextBox4.Value & 1)
-        End If
-    End If
-End Sub
-
-
 Private Sub UserForm_Initialize() '窗体默认启动时添加工作簿名称
+    BooksCount = 0
     For Index = 1 To Excel.Workbooks.Count
-        Me.Controls("ComboBox1").AddItem Excel.Workbooks(Index).Name
-        Me.Controls("ComboBox3").AddItem Excel.Workbooks(Index).Name
+        If Excel.Workbooks(Index).Name <> ThisWorkbook.Name Then
+            Me.Controls("ComboBox1").AddItem Excel.Workbooks(Index).Name
+            Me.Controls("ComboBox3").AddItem Excel.Workbooks(Index).Name
+            BooksCount = BooksCount + 1
+        End If
     Next
-    ComboBox1.ListIndex = 0
-    ComboBox3.ListIndex = 0
+    If BooksCount > 0 Then
+        ComboBox1.ListIndex = 0
+        ComboBox3.ListIndex = 0
+    End If
+    CheckBox1.Value = True
     TextBox5.Value = 2
     TextBox6.Value = "#N/A"
     TextBox7.Value = "&"
 End Sub
-'主函数（按键）入口
+'主函数（按键开始）入口
 Private Sub CommandButton1_Click()
  
-    Dim SourceKeyCol, SourceValueCol As String, ThisKeyCol As String, ThisValueCol As String, WriteNum As Integer
+    Dim SourceKeyCol, SourceValueCol As String, ThisKeyCol As String, ThisValueCol As String, WriteNum As Integer, This_rows As Long, Source_rows As Long
     t0 = Timer
-    SourceKeyCol = TextBox1.Value
-    SourceValueCol = TextBox2.Value
-    ThisKeyCol = TextBox3.Value
-    ThisValueCol = TextBox4.Value
+    SourceKeyCol = StrtoW(Col1.Value)
+    SourceValueCol = StrtoW(Col2.Value)
+    ThisKeyCol = StrtoW(Col3.Value)
+    ThisValueCol = StrtoW(Col4.Value)
     WriteNum = TextBox5.Value
     Set SourceSheet = Excel.Workbooks(ComboBox1.Value).Sheets(ComboBox2.Value)
     Set ThisSheet = Excel.Workbooks(ComboBox3.Value).Sheets(ComboBox4.Value)
     Set MapDict = CreateObject("Scripting.Dictionary")
-    CheckNum = Application.CountA(ThisSheet.Range(TextBox4.Value & ":" & TextBox4.Value))  '统计有效行数
+    CheckNum = Application.CountA(ThisSheet.Range(ThisValueCol & ":" & ThisValueCol))  '统计有效行数
     If CheckNum >= WriteNum Then
         UserForm2.Show
-        While King = -1
-        Wend
-        If King = 0 Then
+        If Is_Exit = True Then
             Exit Sub
         End If
     End If
@@ -135,7 +175,6 @@ Private Sub CommandButton1_Click()
         Next
     End If
     ThisSheet.Range(ThisValueCol & WriteNum).Resize(This_rows - WriteNum + 1, 1) = Result
-    MsgBox "共处理 " & This_rows - WriteNum + 1 & " 条记录，耗时" & Format(Timer - t0, "0.00") & "秒。"
+    MsgBox "共查找 " & This_rows - WriteNum + 1 & " 条记录，耗时" & Format(Timer - t0, "0.00") & "秒。"
     Set MapDict = Nothing
 End Sub
-
