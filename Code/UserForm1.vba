@@ -1,4 +1,3 @@
-'窗体1代码
 Function StrtoW(ByVal SrtText As String) As String '字符转列号再转列字母
     Dim ColNum As Long, Index As Long
     Index = Application.WorksheetFunction.Search(".", SrtText)
@@ -82,6 +81,7 @@ Private Sub ComboBox4_Change()
                 Me.Controls("Col4").AddItem n & ".NULL"
             End If
         Next n
+        Me.Controls("Col4").AddItem n & ".空白尾列"
     End If
 End Sub
 
@@ -98,6 +98,37 @@ End Sub
 
 Private Sub CommandButton2_Click()
     UserForm3.Show
+End Sub
+
+Private Sub Image1_Click()
+    Me.Controls("ComboBox1").Clear
+    BooksCount = 0
+    For Index = 1 To Excel.Workbooks.Count
+        If Excel.Workbooks(Index).Name <> ThisWorkbook.Name Then
+            Me.Controls("ComboBox1").AddItem Excel.Workbooks(Index).Name
+'            Me.Controls("ComboBox3").AddItem Excel.Workbooks(Index).Name
+            BooksCount = BooksCount + 1
+        End If
+    Next
+    If BooksCount > 0 Then
+        ComboBox1.ListIndex = 0
+'        ComboBox3.ListIndex = 0
+    End If
+End Sub
+Private Sub Image2_Click()
+    Me.Controls("ComboBox3").Clear
+    BooksCount = 0
+    For Index = 1 To Excel.Workbooks.Count
+        If Excel.Workbooks(Index).Name <> ThisWorkbook.Name Then
+'            Me.Controls("ComboBox1").AddItem Excel.Workbooks(Index).Name
+            Me.Controls("ComboBox3").AddItem Excel.Workbooks(Index).Name
+            BooksCount = BooksCount + 1
+        End If
+    Next
+    If BooksCount > 0 Then
+'        ComboBox1.ListIndex = 0
+        ComboBox3.ListIndex = 0
+    End If
 End Sub
 
 Private Sub UserForm_Initialize() '窗体默认启动时添加工作簿名称
@@ -146,16 +177,16 @@ Private Sub CommandButton1_Click()
     T_Key = ThisSheet.Range(ThisKeyCol & "1").Resize(This_rows)
     If CheckBox2.Value = False Then '将源数据写入字典
         For n = 1 To Source_rows
-            If Not MapDict.Exists(S_Key(n, 1)) Then
-                MapDict.Add S_Key(n, 1), S_Value(n, 1)
+            If Not MapDict.Exists(CStr(S_Key(n, 1))) Then
+                MapDict.Add CStr(S_Key(n, 1)), S_Value(n, 1)
             End If
         Next n
     Else
         For n = 1 To Source_rows
-            If Not MapDict.Exists(S_Key(n, 1)) Then
-                MapDict.Add S_Key(n, 1), S_Value(n, 1)
+            If Not MapDict.Exists(CStr(S_Key(n, 1))) Then
+                MapDict.Add CStr(S_Key(n, 1)), S_Value(n, 1)
             Else
-                MapDict(S_Key(n, 1)) = MapDict(S_Key(n, 1)) & TextBox7.Value & S_Value(n, 1)
+                MapDict(CStr(S_Key(n, 1))) = MapDict(CStr(S_Key(n, 1))) & TextBox7.Value & S_Value(n, 1)
             End If
         Next n
     End If
@@ -163,14 +194,14 @@ Private Sub CommandButton1_Click()
     ReDim Result(WriteNum To This_rows, 1 To 1)
     If CheckBox1.Value = False Then '索引结果写入到数组
         For n = WriteNum To This_rows
-            Result(n, 1) = MapDict(T_Key(n, 1))
+            Result(n, 1) = MapDict(CStr(T_Key(n, 1)))
         Next
     Else
         For n = WriteNum To This_rows
-            If Not MapDict.Exists(T_Key(n, 1)) Then
+            If Not MapDict.Exists(CStr(T_Key(n, 1))) Then
                 Result(n, 1) = TextBox6.Value
             Else
-                Result(n, 1) = MapDict(T_Key(n, 1))
+                Result(n, 1) = MapDict(CStr(T_Key(n, 1)))
             End If
         Next
     End If
@@ -178,3 +209,4 @@ Private Sub CommandButton1_Click()
     MsgBox "共查找 " & This_rows - WriteNum + 1 & " 条记录，耗时" & Format(Timer - t0, "0.00") & "秒。"
     Set MapDict = Nothing
 End Sub
+
